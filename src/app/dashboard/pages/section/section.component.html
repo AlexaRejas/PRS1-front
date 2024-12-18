@@ -1,0 +1,115 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Botón para abrir el modal -->
+<div class="container mt-4 d-flex justify-content-end">
+  <button class="btn btn-success" (click)="openModal()">
+    <i class="fas fa-plus-circle"></i> Agregar Nueva Sección
+  </button>
+</div>
+
+<!-- Pestañas para secciones activas e inactivas -->
+<div class="mt-4 container">
+  <ul class="nav nav-tabs" id="sectionTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="activeSectionsTab" data-bs-toggle="tab" href="#activeSections" role="tab" aria-controls="activeSections" aria-selected="true">Secciones Activas</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="inactiveSectionsTab" data-bs-toggle="tab" href="#inactiveSections" role="tab" aria-controls="inactiveSections" aria-selected="false">Secciones Inactivas</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="sectionTabsContent">
+    <!-- Tab para secciones activas -->
+    <div class="tab-pane fade show active" id="activeSections" role="tabpanel" aria-labelledby="activeSectionsTab">
+      <div class="table-responsive mt-3">
+        <table class="table table-hover table-bordered">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Fecha Actualización</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let section of activeSections">
+              <td>{{ section.name }}</td>
+              <td>{{ section.description }}</td>
+              <td>{{ section.updateDate | date: 'dd-MMM-yyyy' : undefined : 'es-ES' }}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" (click)="editSection(section)">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteSection(section)">
+                  <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <!-- Tab para secciones inactivas -->
+  <div class="tab-pane fade" id="inactiveSections" role="tabpanel" aria-labelledby="inactiveSectionsTab">
+    <div class="table-responsive mt-3">
+      <table class="table table-hover table-bordered">
+        <thead class="table-secondary">
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Fecha Actualización</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let section of inactiveSections">
+            <td>{{ section.name }}</td>
+            <td>{{ section.description }}</td>
+            <td>{{ section.updateDate | date: 'dd-MMM-yyyy' : undefined : 'es-ES' }}</td>
+            <td>
+              <button class="btn btn-success btn-sm" (click)="restoreSection(section)">
+                <i class="fas fa-undo"></i> Restaurar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal para agregar o editar una sección -->
+<div class="modal fade" id="sectionModal" tabindex="-1" aria-labelledby="sectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sectionModalLabel">{{ isEditing ? 'Editar Sección' : 'Agregar Nueva Sección' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="createOrUpdateSection()">
+          <div class="mb-3">
+            <label for="sectionName" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="sectionName" [(ngModel)]="newSection.name" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="sectionDescription" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="sectionDescription" [(ngModel)]="newSection.description" name="description" required>
+          </div>
+          <div class="mb-3">
+           
+          </div>
+          <div class="mb-3">
+            <label for="sectionUpdateDate" class="form-label">Fecha de Actualización</label>
+            <input type="date" class="form-control" id="sectionUpdateDate" [(ngModel)]="newSection.updateDate" name="updateDate" required>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas" [ngClass]="isEditing ? 'fa-sync' : 'fa-plus'"></i> {{ isEditing ? 'Actualizar' : 'Agregar' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,154 @@
+<div class="container">
+  <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createMetaModal" (click)="prepareForCreate()">
+    Crear Meta
+  </button>
+  <button class="btn btn-info" (click)="toggleInactiveMetas()">
+    {{ showInactiveMetas ? 'Ver Metas Activas' : 'Ver Metas Inactivas' }}
+  </button>
+
+  <!-- Modal de Bootstrap -->
+  <div class="modal fade" id="createMetaModal" tabindex="-1" aria-labelledby="createMetaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="submit" class="btn btn-primary" [disabled]="metaForm.invalid">
+            {{ editingMeta ? 'Actualizar Meta' : 'Crear Meta' }}
+          </button>          
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="metaForm" (ngSubmit)="editingMeta ? updateMeta() : createMeta()">
+            <div class="form-group">
+              <label for="name">Nombre:</label>
+              <input
+                id="name"
+                class="form-control"
+                type="text"
+                formControlName="name"
+                placeholder="Ingresa el nombre de la meta"
+              />
+              <div *ngIf="metaForm.controls['name'].invalid && metaForm.controls['name'].touched" class="text-danger">
+                Nombre es obligatorio.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Descripción:</label>
+              <textarea
+                id="description"
+                class="form-control"
+                formControlName="description"
+                placeholder="Ingresa la descripción de la meta"
+              ></textarea>
+              <div *ngIf="metaForm.controls['description'].invalid && metaForm.controls['description'].touched" class="text-danger">
+                Descripción es obligatoria.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="sectionId">Sección:</label>
+              <select 
+                id="sectionId" 
+                class="form-control" 
+                formControlName="sectionId"
+                (change)="onSectionChange()"
+              >
+                <option value="">Selecciona una sección</option>
+                <option *ngFor="let section of sections" [value]="section.idSection">
+                  {{ section.name }}
+                </option>
+              </select>
+              <div *ngIf="metaForm.controls['sectionId'].invalid && metaForm.controls['sectionId'].touched" class="text-danger">
+                Sección es obligatoria.
+              </div>
+            </div>
+
+            <!-- Mostrar la descripción de la sección seleccionada -->
+            <div *ngIf="selectedSectionDescription" class="form-group">
+              <label>Descripción de la Sección:</label>
+              <p class="text-muted">{{ selectedSectionDescription }}</p>
+            </div>
+
+            <div class="form-group">
+              <label for="objective">Objetivo:</label>
+              <input
+                id="objective"
+                class="form-control"
+                type="text"
+                formControlName="objective"
+                placeholder="Ingresa el objetivo de la meta"
+              />
+              <div *ngIf="metaForm.controls['objective'].invalid && metaForm.controls['objective'].touched" class="text-danger">
+                Objetivo es obligatorio.
+              </div>
+            </div>
+
+            <!-- Tiempo (en meses) -->
+            <div class="form-group">
+              <label for="time">Tiempo (en meses):</label>
+              <select
+                id="time"
+                class="form-control"
+                formControlName="time"
+              >
+                <option value="">Selecciona el tiempo en meses</option>
+                <option *ngFor="let month of months" [value]="month">{{ month }} mes{{ month > 1 ? 'es' : '' }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary" [disabled]="metaForm.invalid">
+                {{ editingMeta ? 'Actualizar Meta' : 'Crear Meta' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Listado de Metas -->
+  <hr />
+  <h3>Metas Cargadas</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Sección</th>
+        <th>Descripción de Sección</th>
+        <th>Objetivo</th>
+        <th>Tiempo (meses)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let meta of metas">
+        <td>{{ meta.name }}</td>
+        <td>{{ meta.description }}</td>
+        <td>{{ meta.section?.name || 'Sin sección' }}</td>
+        <td>{{ meta.sectionDescription || 'Sin descripción' }}</td>
+        <td>{{ meta.objective }}</td>
+        <td>{{ meta.time }} mes{{ +meta.time > 1 ? 'es' : '' }}</td>
+        <td>
+          <!-- Mostrar solo metas activas cuando no se está viendo las inactivas -->
+          <button *ngIf="!showInactiveMetas" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#createMetaModal" (click)="prepareForEdit(meta)">
+            Editar
+          </button>
+          
+          <!-- Mostrar siempre el botón de restaurar cuando se están viendo las metas inactivas -->
+          <button *ngIf="showInactiveMetas" class="btn btn-success btn-sm" (click)="restoreMeta(meta)">
+            Restaurar
+          </button>
+
+          <!-- Mostrar el botón de eliminar solo cuando la meta es activa -->
+          <button *ngIf="!showInactiveMetas" class="btn btn-danger btn-sm" (click)="deleteMeta(meta)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+

@@ -1,0 +1,60 @@
+<div class="container">  
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+  
+    <table class="table table-striped table-hover" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Niños</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let familia of familias">
+          <td>{{ familia.id }}</td>
+          <td>{{ familia.direction }}</td>
+          <td>
+            <span class="badge" [ngClass]="familia.status === 'Activo' ? 'bg-success' : 'bg-danger'">
+              {{ familia.status }}
+            </span>
+          </td>
+          <td>{{ familia.familyComposition?.numbreChildren || 0 }}</td>
+          <td>
+            <button 
+              class="btn btn-sm btn-primary" 
+              (click)="seleccionarFamilia(familia)"
+            >
+              Ver Detalles
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div *ngIf="familySelected" class="card mt-3">
+      <div class="card-header">
+        Detalles de Familia
+      </div>
+      <div class="card-body">
+        <h5>Información Básica</h5>
+        <p><strong>ID:</strong> {{ familySelected.id }}</p>
+        <p><strong>Dirección:</strong> {{ familySelected.direction }}</p>
+        <p><strong>Estado:</strong> {{ familySelected.status }}</p>
+        
+        <h5>Composición Familiar</h5>
+        <p><strong>Número de Niños:</strong> {{ familySelected.familyComposition?.numbreChildren || 0 }}</p>
+        <p><strong>Vida Social:</strong> {{ familySelected.familyComposition?.SocialLife }}</p>
+        <p><strong>Problemas Sociales:</strong> {{ familySelected.familyComposition?.socialProblems }}</p>
+      </div>
+    </div>
+  </div>

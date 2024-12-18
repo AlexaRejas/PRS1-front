@@ -1,0 +1,19 @@
+
+/* Estilo adicional para mejorar el aspecto de la tabla */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1); /* Azul claro de fondo al pasar el mouse */
+    cursor: pointer;
+  }
+  
+  .table-primary {
+    background-color: #cce5ff; /* Color de fondo para los encabezados de la tabla */
+    color: #032c58; /* Color de texto para los encabezados */
+    font-weight: bold;
+  }
+  
+  .alert-warning {
+    font-size: 1.1rem;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
